@@ -1,6 +1,14 @@
 
 public class Guindaste {
 	
+	public Guindaste(Operador operador, int massaContrapeso, int pesoCargaMaxima, int alturaMaximaIcamento) {
+		this.operador = operador;
+		this.massaContrapeso = massaContrapeso;
+		this.pesoCargaMaximaLevantada = pesoCargaMaxima;
+		this.alturaMaximaIcamento = alturaMaximaIcamento;
+	}
+	
+	
 	private String nome;
 	private Base base; 
 	private Operador operador;
@@ -10,7 +18,7 @@ public class Guindaste {
 	private int materialContrapeso;
 	private int massaContrapeso;
 	private int alturaMaximaIcamento;
-	private int cargaMaximaLevantada;
+	private int pesoCargaMaximaLevantada;
 	private int pesoCargaIcada;
 	
 	private int alturaIcamento;
@@ -63,11 +71,11 @@ public class Guindaste {
 	public void setAlturaMaximaIcamento(int alturaMaximaIcamento) {
 		this.alturaMaximaIcamento = alturaMaximaIcamento;
 	}
-	public int getCargaMaximaLevantada() {
-		return cargaMaximaLevantada;
+	public int getPesoCargaMaximaLevantada() {
+		return pesoCargaMaximaLevantada;
 	}
-	public void setCargaMaximaLevantada(int cargaMaximaLevantada) {
-		this.cargaMaximaLevantada = cargaMaximaLevantada;
+	public void setPesoCargaMaximaLevantada(int cargaMaximaLevantada) {
+		this.pesoCargaMaximaLevantada = cargaMaximaLevantada;
 	}
 		
 	public Operador getOperador() {
@@ -76,21 +84,81 @@ public class Guindaste {
 	public void setOperador(Operador operador) {
 		this.operador = operador;
 	}
+	
 	public int getAlturaIcamento() {
 		return alturaIcamento;
 	}
+	
 	public void setAlturaIcamento(int alturaIcamento) {
 		this.alturaIcamento = alturaIcamento;
 	}
 	
 	
 	public void adicionarCargaParaIcamento(int pesoCarga) {
-		//realizar validacoes 
+		
+		if(pesoCarga > pesoCargaMaximaLevantada) {
+			Logger.mensagemDeErro("O peso " + pesoCarga + "Kg e maior que o permitido: " + pesoCargaMaximaLevantada + "Kg.");
+			return;
+		}
+		
+		
+		pesoCargaIcada = pesoCarga;
+		Logger.mensagem("O peso " + pesoCarga + "Kg foi adicionado.");
 	}
 	
 	private boolean podeGuichar() {
 		
-		return false;
+		if(operador == null) {
+			Logger.mensagemDeErro("Guindaste sem operador.");
+			return false;
+		}		
+			
+		
+		if(!operador.podeOperar())		
+			return false;
+		
+		if(pesoCargaIcada <= 0) {
+			Logger.mensagemDeErro("Guindaste sem peso para içar.");
+			return false;
+		}
+		
+		Logger.mensagem("Pode guinchar.");
+		return true;
 	}
 	
+	
+	public void subirCarga(int quantidadeParaSubir) {
+		
+		int alturaTotalDesejada = quantidadeParaSubir + alturaIcamento;
+		
+		if(!podeGuichar())
+			return;
+		
+		if(alturaTotalDesejada > alturaMaximaIcamento) {
+			Logger.mensagemDeErro("Altura ultrapassa em "+ (alturaTotalDesejada - alturaMaximaIcamento) + " metros o limite de içamento: " + alturaMaximaIcamento + " metros.");
+		}		
+		else {
+			alturaIcamento += quantidadeParaSubir;
+			Logger.mensagem("Altura atual: " + alturaIcamento);
+		}
+	}
+	
+	public void descerCarga(int quantidadeParaDescer) {
+			
+		int alturaTotalDesejada = alturaIcamento - quantidadeParaDescer;
+		
+		if(!podeGuichar())
+			return;
+		
+		if(alturaTotalDesejada < 0) {
+			Logger.mensagemDeErro("Altura ultrapassa em "+ alturaTotalDesejada + " metros o solo.");
+		}		
+		else {
+			alturaIcamento -= quantidadeParaDescer;
+		}
+	}
+	
+	public void exibirStatusDoGuindaste() {
+		Logger.mensagem("==STATUS== : Peso atual da carga:" + pesoCargaIcada + " Altura atual: " + alturaIcamento );
+	}
 }

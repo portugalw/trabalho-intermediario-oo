@@ -1,8 +1,8 @@
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Operador {
 	
-	public Operador(String nome, Date dataNascimento, String numeroLicenca, Date dataVencimentoLicenca) {
+	public Operador(String nome, LocalDate dataNascimento, String numeroLicenca, LocalDate dataVencimentoLicenca) {
 		super();
 		this.nome = nome;
 		this.dataNascimento = dataNascimento;
@@ -11,9 +11,9 @@ public class Operador {
 	}
 	
 	private String nome;
-	private Date dataNascimento;
+	private LocalDate dataNascimento;
 	private String numeroLicenca;
-	private Date dataVencimentoLicenca;
+	private LocalDate dataVencimentoLicenca;
 	
 	public String getNome() {
 		return nome;
@@ -21,10 +21,10 @@ public class Operador {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public Date getDataNascimento() {
+	public LocalDate getDataNascimento() {
 		return dataNascimento;
 	}
-	public void setDataNascimento(Date dataNascimento) {
+	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 	public String getNumeroLicenca() {
@@ -33,15 +33,27 @@ public class Operador {
 	public void setNumeroLicenca(String numeroLicenca) {
 		this.numeroLicenca = numeroLicenca;
 	}
-	public Date getDataVencimentoLicenca() {
+	public LocalDate getDataVencimentoLicenca() {
 		return dataVencimentoLicenca;
 	}
-	public void setDataVencimentoLicenca(Date dataVencimentoLicenca) {
+	public void setDataVencimentoLicenca(LocalDate dataVencimentoLicenca) {
 		this.dataVencimentoLicenca = dataVencimentoLicenca;
 	}
 	
 	
 	public boolean podeOperar() { 
-		return dataVencimentoLicenca.before(new Date());
+		boolean podeOperar = dataVencimentoLicenca.isAfter(LocalDate.now());
+		
+		if(!podeOperar) {
+			Logger.mensagemDeErro(obterDados() +" esta com licenca vencida");
+		}
+		
+		
+		return podeOperar;
 	}
+	
+	public String obterDados() {
+		return "Operador: " + nome + ", Licenca: "+ numeroLicenca + " Data venc. licenca:" + Logger.criarDataFormatada(dataVencimentoLicenca);
+	}
+	
 }
